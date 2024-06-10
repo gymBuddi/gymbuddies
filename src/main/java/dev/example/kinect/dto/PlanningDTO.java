@@ -8,6 +8,5 @@ import java.util.List;
 public class PlanningDTO {
     private Long id;
     private String desc;
-    private Long trainee;
     private Long gym;
 }

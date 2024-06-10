@@ -9,5 +9,5 @@ import dev.example.kinect.exception.TraineeNotFoundException;
 public interface ProfileWorkflow {
     ProfileDTO createProfile(ProfileDTO profileDTO) throws TraineeNotFoundException;
 
-    PlanningDTO createPlanning(PlanningDTO planningDTO) throws ProfileNotFoundException, GymNotFoundException;
+    PlanningDTO createPlanning(PlanningDTO planningDTO, Long profile_id) throws ProfileNotFoundException, GymNotFoundException;
 }

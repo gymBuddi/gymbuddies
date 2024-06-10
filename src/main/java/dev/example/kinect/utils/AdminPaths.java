@@ -7,6 +7,7 @@ public class AdminPaths {
 
     public static class Profile {
         public static final String PATH = "/profiles";
+        public static final String PLANNING = "/planning";
     }
 
     public static class Gym {

@@ -47,8 +47,8 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
     }
 
     @Override
-    public PlanningDTO createPlanning(PlanningDTO planningDTO) throws ProfileNotFoundException, GymNotFoundException {
-        Profile profile = profileRepository.findById(planningDTO.getTrainee())
+    public PlanningDTO createPlanning(PlanningDTO planningDTO, Long profile_id) throws ProfileNotFoundException, GymNotFoundException {
+        Profile profile = profileRepository.findById(profile_id)
                 .orElseThrow(() -> new ProfileNotFoundException("trainee not found"));
         Gym gym  = gymRepository.findById(planningDTO.getGym())
                 .orElseThrow(() -> new GymNotFoundException("gym not found"));

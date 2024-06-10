@@ -29,5 +29,5 @@ public class Planning {
     private Gym gym;
     @OneToMany(mappedBy = "planning")
     private List<Offer> offers;
-    private String desc;
+    private String description;
 }
