@@ -1,5 +1,6 @@
 package dev.example.kinect.workflow;
 
+import dev.example.kinect.dto.OfferDTO;
 import dev.example.kinect.dto.PlanningDTO;
 import dev.example.kinect.dto.ProfileDTO;
 import dev.example.kinect.exception.GymNotFoundException;
@@ -13,4 +14,5 @@ public interface ProfileWorkflow {
     PlanningDTO createPlanning(PlanningDTO planningDTO, Long profile_id) throws ProfileNotFoundException, GymNotFoundException;
 
     Void deletePlanning(Long planning_id) throws PlanningNotFoundException;
+    OfferDTO createOffer(OfferDTO offerDTO, Long profile_id) throws PlanningNotFoundException, ProfileNotFoundException;
 }

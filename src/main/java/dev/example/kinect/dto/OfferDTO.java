@@ -8,6 +8,7 @@ import java.util.List;
 public class OfferDTO {
     private Long id;
     private List<RequestDTO> request;
+    private Long planning;
     private LocalDateTime publicationDate;
     private LocalDateTime planningTime;
     private Boolean isActive;

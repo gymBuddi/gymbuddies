@@ -1,5 +1,6 @@
 package dev.example.kinect.workflow.workflowImp;
 
+import dev.example.kinect.dto.OfferDTO;
 import dev.example.kinect.dto.PlanningDTO;
 import dev.example.kinect.dto.ProfileDTO;
 import dev.example.kinect.dto.TraineeDTO;
@@ -8,11 +9,14 @@ import dev.example.kinect.exception.PlanningNotFoundException;
 import dev.example.kinect.exception.ProfileNotFoundException;
 import dev.example.kinect.exception.TraineeNotFoundException;
 import dev.example.kinect.model.Gym;
+import dev.example.kinect.model.Planning;
 import dev.example.kinect.model.Profile;
 import dev.example.kinect.model.Trainee;
 import dev.example.kinect.repository.GymRepository;
+import dev.example.kinect.repository.PlanningRepository;
 import dev.example.kinect.repository.ProfileRepository;
 import dev.example.kinect.repository.TraineeRepository;
+import dev.example.kinect.service.OfferService;
 import dev.example.kinect.service.PlanningService;
 import dev.example.kinect.service.ProfileService;
 import dev.example.kinect.service.serviceImp.ProfileServiceImp;
@@ -27,16 +31,21 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
     private final GymRepository gymRepository;
     private final PlanningService planningService;
     private final ProfileRepository profileRepository;
+    private final PlanningRepository planningRepository;
+    private final OfferService offerService;
     private final ModelMapper modelMapper;
     public ProfileWorkflowImp(ProfileService profileService, TraineeRepository traineeRepository,
                               ModelMapper modelMapper, GymRepository gymRepository, PlanningService planningService,
-                              ProfileRepository profileRepository){
+                              ProfileRepository profileRepository, PlanningRepository planningRepository,
+                              OfferService offerService){
         this.profileService = profileService;
         this.traineeRepository = traineeRepository;
         this.modelMapper = modelMapper;
         this.gymRepository = gymRepository;
         this.planningService = planningService;
         this.profileRepository = profileRepository;
+        this.planningRepository = planningRepository;
+        this.offerService = offerService;
     }
 
     @Override
@@ -60,6 +69,16 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
     @Override
     public Void deletePlanning(Long planning_id) throws PlanningNotFoundException {
         return planningService.deletePlanning(planning_id);
+    }
+
+    @Override
+    public OfferDTO createOffer(OfferDTO offerDTO, Long profile_id) throws PlanningNotFoundException, ProfileNotFoundException {
+        Planning planning = planningRepository.findById(offerDTO.getPlanning())
+                .orElseThrow(() -> new PlanningNotFoundException("planning not found"));
+        Profile profile = profileRepository.findById(profile_id)
+                .orElseThrow(() -> new ProfileNotFoundException("user not found"));
+        offerService.saveOffer(offerDTO, planning, profile);
+        return null;
     }
 
 }

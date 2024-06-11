@@ -1,7 +1,10 @@
 package dev.example.kinect.model;
 
+import dev.example.kinect.model.enums.Role;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,5 +25,6 @@ public class Trainee {
     private String password;
     @OneToOne(mappedBy = "trainee", cascade = CascadeType.ALL)
     private Profile profile;
-
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }
