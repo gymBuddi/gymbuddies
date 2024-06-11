@@ -2,7 +2,9 @@ package dev.example.kinect.controller;
 
 import dev.example.kinect.dto.PlanningDTO;
 import dev.example.kinect.dto.ProfileDTO;
+import dev.example.kinect.dto.RequestDTO;
 import dev.example.kinect.exception.GymNotFoundException;
+import dev.example.kinect.exception.OfferNotFoundException;
 import dev.example.kinect.exception.PlanningNotFoundException;
 import dev.example.kinect.exception.ProfileNotFoundException;
 import dev.example.kinect.exception.TraineeNotFoundException;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.nio.file.Path;
 import java.util.List;
 
 @RequestMapping(value = AdminPaths.Profile.PATH)
@@ -38,4 +41,8 @@ public interface ProfileController {
 
     @DeleteMapping(AdminPaths.Profile.PLANNING + PathParam.ID)
     Void deletePlanning(@PathVariable(value = RestParam.ID) Long planning_id) throws PlanningNotFoundException;
+
+    @PostMapping(AdminPaths.Profile.REQUEST + PathParam.ID)
+    RequestDTO createRequest(@RequestBody RequestDTO requestDTO, @PathVariable(value = RestParam.ID) Long profile_id)
+            throws ProfileNotFoundException, OfferNotFoundException;
 }

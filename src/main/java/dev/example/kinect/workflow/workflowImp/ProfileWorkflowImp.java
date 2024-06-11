@@ -3,23 +3,26 @@ package dev.example.kinect.workflow.workflowImp;
 import dev.example.kinect.dto.OfferDTO;
 import dev.example.kinect.dto.PlanningDTO;
 import dev.example.kinect.dto.ProfileDTO;
-import dev.example.kinect.dto.TraineeDTO;
+import dev.example.kinect.dto.RequestDTO;
 import dev.example.kinect.exception.GymNotFoundException;
+import dev.example.kinect.exception.OfferNotFoundException;
 import dev.example.kinect.exception.PlanningNotFoundException;
 import dev.example.kinect.exception.ProfileNotFoundException;
 import dev.example.kinect.exception.TraineeNotFoundException;
 import dev.example.kinect.model.Gym;
+import dev.example.kinect.model.Offer;
 import dev.example.kinect.model.Planning;
 import dev.example.kinect.model.Profile;
 import dev.example.kinect.model.Trainee;
 import dev.example.kinect.repository.GymRepository;
+import dev.example.kinect.repository.OfferRepository;
 import dev.example.kinect.repository.PlanningRepository;
 import dev.example.kinect.repository.ProfileRepository;
 import dev.example.kinect.repository.TraineeRepository;
 import dev.example.kinect.service.OfferService;
 import dev.example.kinect.service.PlanningService;
 import dev.example.kinect.service.ProfileService;
-import dev.example.kinect.service.serviceImp.ProfileServiceImp;
+import dev.example.kinect.service.RequestService;
 import dev.example.kinect.workflow.ProfileWorkflow;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -33,11 +36,13 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
     private final ProfileRepository profileRepository;
     private final PlanningRepository planningRepository;
     private final OfferService offerService;
+    private final OfferRepository offerRepository;
+    private final RequestService requestService;
     private final ModelMapper modelMapper;
     public ProfileWorkflowImp(ProfileService profileService, TraineeRepository traineeRepository,
                               ModelMapper modelMapper, GymRepository gymRepository, PlanningService planningService,
                               ProfileRepository profileRepository, PlanningRepository planningRepository,
-                              OfferService offerService){
+                              OfferService offerService, OfferRepository offerRepository, RequestService requestService){
         this.profileService = profileService;
         this.traineeRepository = traineeRepository;
         this.modelMapper = modelMapper;
@@ -46,6 +51,8 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
         this.profileRepository = profileRepository;
         this.planningRepository = planningRepository;
         this.offerService = offerService;
+        this.offerRepository = offerRepository;
+        this.requestService = requestService;
     }
 
     @Override
@@ -62,8 +69,7 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
                 .orElseThrow(() -> new ProfileNotFoundException("trainee not found"));
         Gym gym  = gymRepository.findById(planningDTO.getGym())
                 .orElseThrow(() -> new GymNotFoundException("gym not found"));
-        planningService.savePlanning(planningDTO, profile, gym);
-        return null;
+        return planningService.savePlanning(planningDTO, profile, gym);
     }
 
     @Override
@@ -77,8 +83,16 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
                 .orElseThrow(() -> new PlanningNotFoundException("planning not found"));
         Profile profile = profileRepository.findById(profile_id)
                 .orElseThrow(() -> new ProfileNotFoundException("user not found"));
-        offerService.saveOffer(offerDTO, planning, profile);
-        return null;
+        return offerService.saveOffer(offerDTO, planning, profile);
+    }
+
+    @Override
+    public RequestDTO createRequest(RequestDTO requestDTO, Long profile_id) throws ProfileNotFoundException, OfferNotFoundException {
+        Profile profile = profileRepository.findById(profile_id)
+                .orElseThrow(() -> new ProfileNotFoundException("user not found"));
+        Offer offer = offerRepository.findById(requestDTO.getOffer())
+                .orElseThrow(() -> new OfferNotFoundException("offer not found"));
+        return requestService.saveRequest(requestDTO, profile, offer);
     }
 
 }

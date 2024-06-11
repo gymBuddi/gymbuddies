@@ -8,5 +8,6 @@ import java.time.LocalDateTime;
 public class RequestDTO {
     private Long id;
     private boolean isMatched;
+    private Long offer;
     private LocalDateTime creationDate;
 }

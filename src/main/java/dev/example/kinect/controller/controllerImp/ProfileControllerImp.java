@@ -3,7 +3,9 @@ package dev.example.kinect.controller.controllerImp;
 import dev.example.kinect.controller.ProfileController;
 import dev.example.kinect.dto.PlanningDTO;
 import dev.example.kinect.dto.ProfileDTO;
+import dev.example.kinect.dto.RequestDTO;
 import dev.example.kinect.exception.GymNotFoundException;
+import dev.example.kinect.exception.OfferNotFoundException;
 import dev.example.kinect.exception.PlanningNotFoundException;
 import dev.example.kinect.exception.ProfileNotFoundException;
 import dev.example.kinect.exception.TraineeNotFoundException;
@@ -51,6 +53,12 @@ public class ProfileControllerImp implements ProfileController {
     @Override
     public Void deletePlanning(Long planning_id) throws PlanningNotFoundException {
         return profileWorkflow.deletePlanning(planning_id);
+    }
+
+    @Override
+    public RequestDTO createRequest(RequestDTO requestDTO, Long profile_id)
+            throws ProfileNotFoundException, OfferNotFoundException {
+        return profileWorkflow.createRequest(requestDTO, profile_id);
     }
 
 }
