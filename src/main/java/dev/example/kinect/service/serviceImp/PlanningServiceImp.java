@@ -1,6 +1,7 @@
 package dev.example.kinect.service.serviceImp;
 
 import dev.example.kinect.dto.PlanningDTO;
+import dev.example.kinect.exception.PlanningNotFoundException;
 import dev.example.kinect.model.Gym;
 import dev.example.kinect.model.Planning;
 import dev.example.kinect.model.Profile;
@@ -21,10 +22,19 @@ public class PlanningServiceImp implements PlanningService {
     }
     @Override
     public PlanningDTO savePlanning(PlanningDTO planningDTO, Profile profile, Gym gym) {
-        Planning planning = modelMapper.map(planningDTO, Planning.class);
+        Planning planning = new Planning();
+        planning.setDescription(planningDTO.getDescription());
         planning.setGym(gym);
         planning.setProfile(profile);
         planningRepository.save(planning);
-        return modelMapper.map(planning, PlanningDTO.class);
+        return planningDTO;
+    }
+
+    @Override
+    public Void deletePlanning(Long planning_id) throws PlanningNotFoundException {
+        Planning planning = planningRepository.findById(planning_id)
+                .orElseThrow(() -> new PlanningNotFoundException("planning not found"));
+        planningRepository.delete(planning);
+        return null;
     }
 }

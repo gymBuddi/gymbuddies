@@ -3,12 +3,14 @@ package dev.example.kinect.controller;
 import dev.example.kinect.dto.PlanningDTO;
 import dev.example.kinect.dto.ProfileDTO;
 import dev.example.kinect.exception.GymNotFoundException;
+import dev.example.kinect.exception.PlanningNotFoundException;
 import dev.example.kinect.exception.ProfileNotFoundException;
 import dev.example.kinect.exception.TraineeNotFoundException;
 import dev.example.kinect.utils.AdminPaths;
 import dev.example.kinect.utils.PathParam;
 import dev.example.kinect.utils.RestParam;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,4 +35,7 @@ public interface ProfileController {
     PlanningDTO createPlanning(@RequestBody PlanningDTO planningDTO,
                                @PathVariable(value = RestParam.ID) Long profile_id)
             throws GymNotFoundException, ProfileNotFoundException;
+
+    @DeleteMapping(AdminPaths.Profile.PLANNING + PathParam.ID)
+    Void deletePlanning(@PathVariable(value = RestParam.ID) Long planning_id) throws PlanningNotFoundException;
 }

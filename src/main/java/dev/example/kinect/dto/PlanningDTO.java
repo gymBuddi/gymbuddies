@@ -7,6 +7,6 @@ import java.util.List;
 @Data
 public class PlanningDTO {
     private Long id;
-    private String desc;
+    private String description;
     private Long gym;
 }

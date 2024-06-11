@@ -4,6 +4,7 @@ import dev.example.kinect.controller.ProfileController;
 import dev.example.kinect.dto.PlanningDTO;
 import dev.example.kinect.dto.ProfileDTO;
 import dev.example.kinect.exception.GymNotFoundException;
+import dev.example.kinect.exception.PlanningNotFoundException;
 import dev.example.kinect.exception.ProfileNotFoundException;
 import dev.example.kinect.exception.TraineeNotFoundException;
 import dev.example.kinect.service.ProfileService;
@@ -46,4 +47,10 @@ public class ProfileControllerImp implements ProfileController {
     public PlanningDTO createPlanning(PlanningDTO planningDTO, Long profile_id) throws GymNotFoundException, ProfileNotFoundException {
         return profileWorkflow.createPlanning(planningDTO, profile_id);
     }
+
+    @Override
+    public Void deletePlanning(Long planning_id) throws PlanningNotFoundException {
+        return profileWorkflow.deletePlanning(planning_id);
+    }
+
 }
