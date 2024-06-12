@@ -8,5 +8,5 @@ import dev.example.kinect.model.Trainee;
 
 public interface PlanningService {
     PlanningDTO savePlanning(PlanningDTO planningDTO, Profile profile, Gym gym);
-    Void deletePlanning(Long planning_id) throws PlanningNotFoundException;
+    Void deletePlanning(Long planning_id, Long profile_id) throws PlanningNotFoundException;
 }

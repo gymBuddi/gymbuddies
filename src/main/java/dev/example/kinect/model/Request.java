@@ -1,6 +1,9 @@
 package dev.example.kinect.model;
 
+import dev.example.kinect.model.enums.Status;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,4 +31,8 @@ public class Request {
     private Offer offer;
     private boolean isMatched;
     private LocalDateTime creationDate;
+    private LocalDateTime lastUpdatedDate;
+    @Enumerated(EnumType.STRING)
+    private Status status;
+    private boolean enabled;
 }

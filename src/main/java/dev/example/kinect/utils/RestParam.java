@@ -1,5 +1,7 @@
 package dev.example.kinect.utils;
 
 public class RestParam {
-    public static final String ID = "id";
+    public static final String PROFILE_ID = "profile_id";
+    public static final String PLANNING_ID = "planning_id";
+    public static final String REQUEST_ID = "request_id";
 }

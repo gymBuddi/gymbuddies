@@ -8,7 +8,7 @@ public class AdminPaths {
     public static class Profile {
         public static final String PATH = "/profiles";
         public static final String PLANNING = "/planning";
-        public static final String REQUEST = "/request";
+
     }
 
     public static class Gym {
@@ -16,5 +16,10 @@ public class AdminPaths {
     }
     public static class Offer {
         public static final String PATH= "/offers";
+    }
+    public static class Request {
+        public static final String PATH = "/request";
+        public static final String ACCEPT = "/accept";
+        public static final String DENIED = "/denied";
     }
 }

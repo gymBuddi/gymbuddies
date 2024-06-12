@@ -8,6 +8,7 @@ import dev.example.kinect.exception.GymNotFoundException;
 import dev.example.kinect.exception.OfferNotFoundException;
 import dev.example.kinect.exception.PlanningNotFoundException;
 import dev.example.kinect.exception.ProfileNotFoundException;
+import dev.example.kinect.exception.RequestNotFoundException;
 import dev.example.kinect.exception.TraineeNotFoundException;
 import dev.example.kinect.service.ProfileService;
 import dev.example.kinect.workflow.ProfileWorkflow;
@@ -51,14 +52,24 @@ public class ProfileControllerImp implements ProfileController {
     }
 
     @Override
-    public Void deletePlanning(Long planning_id) throws PlanningNotFoundException {
-        return profileWorkflow.deletePlanning(planning_id);
+    public Void deletePlanning(Long planning_id, Long profile_id) throws PlanningNotFoundException {
+        return profileWorkflow.deletePlanning(planning_id, profile_id);
     }
 
     @Override
     public RequestDTO createRequest(RequestDTO requestDTO, Long profile_id)
             throws ProfileNotFoundException, OfferNotFoundException {
         return profileWorkflow.createRequest(requestDTO, profile_id);
+    }
+
+    @Override
+    public String acceptRequest(Long request_id) throws RequestNotFoundException {
+        return profileWorkflow.acceptRequest(request_id);
+    }
+
+    @Override
+    public String deniedRequest(Long request_id) throws RequestNotFoundException {
+        return profileWorkflow.deniedRequest(request_id);
     }
 
 }

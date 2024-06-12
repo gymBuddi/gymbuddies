@@ -40,6 +40,7 @@ public class ProfileServiceImp implements ProfileService {
         profileDTO.setCreationDate(LocalDate.now());
         Profile profile = modelMapper.map(profileDTO, Profile.class);
         profile.setTrainee(trainee);
+        trainee.setProfile(profile);
         profileRepository.save(profile);
         return "trainee is saved successfully in db";
     }

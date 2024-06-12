@@ -13,6 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequestMapping(AdminPaths.Offer.PATH)
 public interface OfferController {
-    @PostMapping(PathParam.ID)
-    OfferDTO createOffer(@RequestBody OfferDTO offerDTO, @PathVariable(value = RestParam.ID) Long profile_id) throws ProfileNotFoundException, PlanningNotFoundException;
+    @PostMapping(PathParam.PROFILE_ID)
+    OfferDTO createOffer(@RequestBody OfferDTO offerDTO, @PathVariable(value = RestParam.PROFILE_ID) Long profile_id) throws ProfileNotFoundException, PlanningNotFoundException;
 }

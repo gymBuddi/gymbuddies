@@ -22,6 +22,8 @@ public class OfferServiceImp implements OfferService {
         Offer offer = modelMapper.map(offerDTO, Offer.class);
         offer.setProfile(profile);
         offer.setPlanning(planning);
+        profile.getOffers().add(offer);
+        planning.getOffers().add(offer);
         offerRepository.save(offer);
         return offerDTO;
     }

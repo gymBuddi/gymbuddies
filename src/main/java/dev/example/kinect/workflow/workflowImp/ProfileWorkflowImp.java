@@ -8,16 +8,22 @@ import dev.example.kinect.exception.GymNotFoundException;
 import dev.example.kinect.exception.OfferNotFoundException;
 import dev.example.kinect.exception.PlanningNotFoundException;
 import dev.example.kinect.exception.ProfileNotFoundException;
+import dev.example.kinect.exception.RequestNotFoundException;
 import dev.example.kinect.exception.TraineeNotFoundException;
 import dev.example.kinect.model.Gym;
+import dev.example.kinect.model.Match;
 import dev.example.kinect.model.Offer;
 import dev.example.kinect.model.Planning;
 import dev.example.kinect.model.Profile;
+import dev.example.kinect.model.Request;
 import dev.example.kinect.model.Trainee;
+import dev.example.kinect.model.enums.Status;
 import dev.example.kinect.repository.GymRepository;
+import dev.example.kinect.repository.MatchingRepository;
 import dev.example.kinect.repository.OfferRepository;
 import dev.example.kinect.repository.PlanningRepository;
 import dev.example.kinect.repository.ProfileRepository;
+import dev.example.kinect.repository.RequestRepository;
 import dev.example.kinect.repository.TraineeRepository;
 import dev.example.kinect.service.OfferService;
 import dev.example.kinect.service.PlanningService;
@@ -26,6 +32,8 @@ import dev.example.kinect.service.RequestService;
 import dev.example.kinect.workflow.ProfileWorkflow;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 public class ProfileWorkflowImp implements ProfileWorkflow {
@@ -38,11 +46,14 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
     private final OfferService offerService;
     private final OfferRepository offerRepository;
     private final RequestService requestService;
+    private final RequestRepository requestRepository;
+    private final MatchingRepository matchRepository;
     private final ModelMapper modelMapper;
     public ProfileWorkflowImp(ProfileService profileService, TraineeRepository traineeRepository,
                               ModelMapper modelMapper, GymRepository gymRepository, PlanningService planningService,
                               ProfileRepository profileRepository, PlanningRepository planningRepository,
-                              OfferService offerService, OfferRepository offerRepository, RequestService requestService){
+                              OfferService offerService, OfferRepository offerRepository, RequestService requestService,
+                              RequestRepository requestRepository, MatchingRepository matchRepository){
         this.profileService = profileService;
         this.traineeRepository = traineeRepository;
         this.modelMapper = modelMapper;
@@ -53,6 +64,8 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
         this.offerService = offerService;
         this.offerRepository = offerRepository;
         this.requestService = requestService;
+        this.requestRepository = requestRepository;
+        this.matchRepository = matchRepository;
     }
 
     @Override
@@ -73,8 +86,8 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
     }
 
     @Override
-    public Void deletePlanning(Long planning_id) throws PlanningNotFoundException {
-        return planningService.deletePlanning(planning_id);
+    public Void deletePlanning(Long planning_id, Long profile_id) throws PlanningNotFoundException {
+        return planningService.deletePlanning(planning_id, profile_id);
     }
 
     @Override
@@ -93,6 +106,36 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
         Offer offer = offerRepository.findById(requestDTO.getOffer())
                 .orElseThrow(() -> new OfferNotFoundException("offer not found"));
         return requestService.saveRequest(requestDTO, profile, offer);
+    }
+
+    @Override
+    public String acceptRequest(Long request_id) throws RequestNotFoundException {
+        Request request = requestRepository.findById(request_id)
+                .orElseThrow(() -> new RequestNotFoundException("request not found"));
+        if (request.isEnabled()) {
+            request.setMatched(true);
+            request.setLastUpdatedDate(LocalDateTime.now());
+            request.setStatus(Status.ACCEPTED);
+            Match match = new Match();
+            match.setRequest(request);
+            match.setMatchDate(LocalDateTime.now());
+            matchRepository.save(match);
+            return "congrats! new match is saved";
+        }
+        return "request is no longer enabled";
+    }
+
+    @Override
+    public String deniedRequest(Long request_id) throws RequestNotFoundException {
+        Request request = requestRepository.findById(request_id)
+                .orElseThrow(() -> new RequestNotFoundException("request not found"));
+        if (request.isEnabled()) {
+            request.setMatched(true);
+            request.setLastUpdatedDate(LocalDateTime.now());
+            request.setStatus(Status.DENIED);
+            return "Request has been denied";
+        }
+        return "request is no longer enabled";
     }
 
 }

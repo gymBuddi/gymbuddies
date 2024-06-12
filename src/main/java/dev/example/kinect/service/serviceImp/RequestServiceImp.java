@@ -4,6 +4,7 @@ import dev.example.kinect.dto.RequestDTO;
 import dev.example.kinect.model.Offer;
 import dev.example.kinect.model.Profile;
 import dev.example.kinect.model.Request;
+import dev.example.kinect.model.enums.Status;
 import dev.example.kinect.repository.RequestRepository;
 import dev.example.kinect.service.RequestService;
 import org.modelmapper.ModelMapper;
@@ -26,6 +27,11 @@ public class RequestServiceImp implements RequestService {
         request.setSender(profile);
         request.setOffer(offer);
         request.setMatched(false);
+        request.setStatus(Status.PENDING);
+        request.setLastUpdatedDate(LocalDateTime.now());
+        profile.getRequests().add(request);
+        offer.getRequest().add(request);
+        requestRepository.save(request);
         return requestDTO;
     }
 }

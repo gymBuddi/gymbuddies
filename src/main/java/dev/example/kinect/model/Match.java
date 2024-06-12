@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 public class Match {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,9 +23,6 @@ public class Match {
     @OneToOne
     @JoinColumn(name = "request_id")
     private Request request;
-    @OneToOne
-    @JoinColumn(name = "offer_id")
-    private Offer offer;
     private LocalDateTime matchDate;
-    private Planning planning;
+    private LocalDateTime dropped;
 }
