@@ -1,5 +1,6 @@
 package dev.example.kinect.workflow.workflowImp;
 
+import dev.example.kinect.dto.NotificationDTO;
 import dev.example.kinect.dto.OfferDTO;
 import dev.example.kinect.dto.PlanningDTO;
 import dev.example.kinect.dto.ProfileDTO;
@@ -25,12 +26,12 @@ import dev.example.kinect.repository.PlanningRepository;
 import dev.example.kinect.repository.ProfileRepository;
 import dev.example.kinect.repository.RequestRepository;
 import dev.example.kinect.repository.TraineeRepository;
+import dev.example.kinect.service.NotificationService;
 import dev.example.kinect.service.OfferService;
 import dev.example.kinect.service.PlanningService;
 import dev.example.kinect.service.ProfileService;
 import dev.example.kinect.service.RequestService;
 import dev.example.kinect.workflow.ProfileWorkflow;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -48,15 +49,15 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
     private final RequestService requestService;
     private final RequestRepository requestRepository;
     private final MatchingRepository matchRepository;
-    private final ModelMapper modelMapper;
+    private final NotificationService notificationService;
     public ProfileWorkflowImp(ProfileService profileService, TraineeRepository traineeRepository,
-                              ModelMapper modelMapper, GymRepository gymRepository, PlanningService planningService,
+                              GymRepository gymRepository, PlanningService planningService,
                               ProfileRepository profileRepository, PlanningRepository planningRepository,
                               OfferService offerService, OfferRepository offerRepository, RequestService requestService,
-                              RequestRepository requestRepository, MatchingRepository matchRepository){
+                              RequestRepository requestRepository, MatchingRepository matchRepository,
+                              NotificationService notificationService){
         this.profileService = profileService;
         this.traineeRepository = traineeRepository;
-        this.modelMapper = modelMapper;
         this.gymRepository = gymRepository;
         this.planningService = planningService;
         this.profileRepository = profileRepository;
@@ -66,6 +67,7 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
         this.requestService = requestService;
         this.requestRepository = requestRepository;
         this.matchRepository = matchRepository;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -100,6 +102,11 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
     }
 
     @Override
+    public Void deleteOffer(Long offer_id) throws OfferNotFoundException {
+        return offerService.deletedOffer(offer_id);
+    }
+
+    @Override
     public RequestDTO createRequest(RequestDTO requestDTO, Long profile_id) throws ProfileNotFoundException, OfferNotFoundException {
         Profile profile = profileRepository.findById(profile_id)
                 .orElseThrow(() -> new ProfileNotFoundException("user not found"));
@@ -109,17 +116,26 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
     }
 
     @Override
-    public String acceptRequest(Long request_id) throws RequestNotFoundException {
+    public String acceptRequest(Long request_id) throws RequestNotFoundException, ProfileNotFoundException {
         Request request = requestRepository.findById(request_id)
                 .orElseThrow(() -> new RequestNotFoundException("request not found"));
         if (request.isEnabled()) {
             request.setMatched(true);
             request.setLastUpdatedDate(LocalDateTime.now());
             request.setStatus(Status.ACCEPTED);
+            requestRepository.save(request);
             Match match = new Match();
             match.setRequest(request);
+            match.setOffer(request.getOffer());
             match.setMatchDate(LocalDateTime.now());
             matchRepository.save(match);
+            // notify the user who made the request
+            Profile requestUser = request.getSender();
+            String message = "Your request for the offer : {}, has been accepted!" + request.getOffer().getId();
+            NotificationDTO notificationDTO = new NotificationDTO();
+            notificationDTO.setProfile(requestUser.getId());
+            notificationDTO.setMessage(message);
+            notificationService.createNotification(notificationDTO);
             return "congrats! new match is saved";
         }
         return "request is no longer enabled";
@@ -133,6 +149,7 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
             request.setMatched(true);
             request.setLastUpdatedDate(LocalDateTime.now());
             request.setStatus(Status.DENIED);
+            requestRepository.save(request);
             return "Request has been denied";
         }
         return "request is no longer enabled";

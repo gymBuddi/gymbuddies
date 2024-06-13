@@ -1,7 +1,6 @@
 package dev.example.kinect.service.serviceImp;
 
 import dev.example.kinect.dto.ProfileDTO;
-import dev.example.kinect.dto.TraineeDTO;
 import dev.example.kinect.exception.ProfileNotFoundException;
 import dev.example.kinect.model.Profile;
 import dev.example.kinect.model.Trainee;
@@ -36,12 +35,11 @@ public class ProfileServiceImp implements ProfileService {
     }
 
     @Override
-    public String saveProfile(ProfileDTO profileDTO, Trainee trainee) {
+    public void saveProfile(ProfileDTO profileDTO, Trainee trainee) {
         profileDTO.setCreationDate(LocalDate.now());
         Profile profile = modelMapper.map(profileDTO, Profile.class);
         profile.setTrainee(trainee);
         trainee.setProfile(profile);
         profileRepository.save(profile);
-        return "trainee is saved successfully in db";
     }
 }

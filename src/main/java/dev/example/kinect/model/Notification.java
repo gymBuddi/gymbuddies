@@ -5,27 +5,25 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class Match {
+public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne
-    @JoinColumn(name = "request_id")
-    private Request request;
-    @OneToOne
-    @JoinColumn(name = "offer_id")
-    private Offer offer;
-    private LocalDateTime matchDate;
-    private LocalDateTime dropped;
+    @ManyToOne
+    @JoinColumn(name = "profile_id")
+    private Profile profile;
+    private String message;
+    private LocalDateTime createdAt;
+    private boolean read;
 }

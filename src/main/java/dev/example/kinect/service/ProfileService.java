@@ -1,7 +1,6 @@
 package dev.example.kinect.service;
 
 import dev.example.kinect.dto.ProfileDTO;
-import dev.example.kinect.dto.TraineeDTO;
 import dev.example.kinect.exception.ProfileNotFoundException;
 import dev.example.kinect.model.Trainee;
 
@@ -11,5 +10,5 @@ public interface ProfileService {
 
     List<ProfileDTO> loadAllProfiles();
     ProfileDTO loadProfile(String username) throws ProfileNotFoundException;
-    String saveProfile(ProfileDTO profileDTO, Trainee trainee);
+    void saveProfile(ProfileDTO profileDTO, Trainee trainee);
 }

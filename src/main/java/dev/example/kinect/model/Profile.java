@@ -45,4 +45,7 @@ public class Profile {
     private List<Request> requests;
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
     private List<Offer> offers;
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
+    private List<Notification> notifications;
+
 }
