@@ -63,7 +63,7 @@ public class ProfileControllerImp implements ProfileController {
     }
 
     @Override
-    public String acceptRequest(Long request_id) throws RequestNotFoundException {
+    public String acceptRequest(Long request_id) throws RequestNotFoundException, ProfileNotFoundException {
         return profileWorkflow.acceptRequest(request_id);
     }
 

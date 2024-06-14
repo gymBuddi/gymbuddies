@@ -20,3 +20,8 @@ spring:
     user:
       name: username
       password: password
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: gym.buddies.mobile@gmail.com
+    password: gymbuddies123@

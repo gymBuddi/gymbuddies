@@ -8,6 +8,7 @@ import dev.example.kinect.model.Planning;
 import dev.example.kinect.model.Profile;
 import dev.example.kinect.model.Request;
 import dev.example.kinect.repository.OfferRepository;
+import dev.example.kinect.repository.PlanningRepository;
 import dev.example.kinect.repository.ProfileRepository;
 import dev.example.kinect.service.OfferService;
 import org.modelmapper.ModelMapper;
@@ -18,10 +19,13 @@ public class OfferServiceImp implements OfferService {
     private final OfferRepository offerRepository;
     private final ProfileRepository profileRepository;
     private final ModelMapper modelMapper;
-    public OfferServiceImp(OfferRepository offerRepository, ModelMapper modelMapper, ProfileRepository profileRepository){
+    private final PlanningRepository planningRepository;
+    public OfferServiceImp(OfferRepository offerRepository, ModelMapper modelMapper, ProfileRepository profileRepository,
+                           PlanningRepository planningRepository){
         this.offerRepository = offerRepository;
         this.modelMapper = modelMapper;
         this.profileRepository = profileRepository;
+        this.planningRepository = planningRepository;
     }
     @Override
     public OfferDTO saveOffer(OfferDTO offerDTO, Planning planning, Profile profile) {
@@ -30,6 +34,8 @@ public class OfferServiceImp implements OfferService {
         offer.setPlanning(planning);
         profile.getOffers().add(offer);
         planning.getOffers().add(offer);
+        profileRepository.save(profile);
+        planningRepository.save(planning);
         offerRepository.save(offer);
         return offerDTO;
     }

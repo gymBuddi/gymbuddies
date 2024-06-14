@@ -11,4 +11,5 @@ public interface ProfileService {
     List<ProfileDTO> loadAllProfiles();
     ProfileDTO loadProfile(String username) throws ProfileNotFoundException;
     void saveProfile(ProfileDTO profileDTO, Trainee trainee);
+    String getProfileEmail(Long profile_id) throws ProfileNotFoundException;
 }

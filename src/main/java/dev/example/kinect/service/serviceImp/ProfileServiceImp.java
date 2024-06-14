@@ -5,6 +5,7 @@ import dev.example.kinect.exception.ProfileNotFoundException;
 import dev.example.kinect.model.Profile;
 import dev.example.kinect.model.Trainee;
 import dev.example.kinect.repository.ProfileRepository;
+import dev.example.kinect.repository.TraineeRepository;
 import dev.example.kinect.service.ProfileService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -16,10 +17,12 @@ import java.util.List;
 public class ProfileServiceImp implements ProfileService {
     private final ProfileRepository profileRepository;
     private final ModelMapper modelMapper;
+    private final TraineeRepository traineeRepository;
     
-    public ProfileServiceImp(ProfileRepository profileRepository, ModelMapper modelMapper){
+    public ProfileServiceImp(ProfileRepository profileRepository, ModelMapper modelMapper, TraineeRepository traineeRepository){
         this.profileRepository = profileRepository;
         this.modelMapper = modelMapper;
+        this.traineeRepository = traineeRepository;
     }
 
     @Override
@@ -40,6 +43,15 @@ public class ProfileServiceImp implements ProfileService {
         Profile profile = modelMapper.map(profileDTO, Profile.class);
         profile.setTrainee(trainee);
         trainee.setProfile(profile);
+        traineeRepository.save(trainee);
         profileRepository.save(profile);
+    }
+
+    @Override
+    public String getProfileEmail(Long profile_id) throws ProfileNotFoundException {
+        Profile profile = profileRepository.findById(profile_id)
+                .orElseThrow(() -> new ProfileNotFoundException("profile not found"));
+        Trainee trainee = profile.getTrainee();
+        return trainee.getEmail();
     }
 }

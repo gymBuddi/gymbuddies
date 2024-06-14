@@ -136,6 +136,7 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
             notificationDTO.setProfile(requestUser.getId());
             notificationDTO.setMessage(message);
             notificationService.createNotification(notificationDTO);
+            notificationService.notifyUser(requestUser.getId(), "Your Offer has been accepted", message);
             return "congrats! new match is saved";
         }
         return "request is no longer enabled";

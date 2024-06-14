@@ -48,7 +48,7 @@ public interface ProfileController {
             throws ProfileNotFoundException, OfferNotFoundException;
 
     @GetMapping(AdminPaths.Request.PATH + AdminPaths.Request.ACCEPT + PathParam.REQUEST_ID)
-    String acceptRequest(@PathVariable(value = RestParam.REQUEST_ID) Long request_id) throws RequestNotFoundException;
+    String acceptRequest(@PathVariable(value = RestParam.REQUEST_ID) Long request_id) throws RequestNotFoundException, ProfileNotFoundException;
     @GetMapping(AdminPaths.Request.PATH + AdminPaths.Request.DENIED + PathParam.REQUEST_ID)
     String deniedRequest(@PathVariable(value = RestParam.REQUEST_ID) Long request_id) throws RequestNotFoundException;
 }

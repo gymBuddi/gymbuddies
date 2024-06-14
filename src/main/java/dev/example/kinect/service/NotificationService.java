@@ -10,4 +10,5 @@ public interface NotificationService {
     void createNotification(NotificationDTO notificationDTO) throws ProfileNotFoundException;
     List<NotificationDTO> getUnreadNotifications(Long profile_id);
     Void markAsRead(Long notification_id) throws NotificationNotFoundException;
+    void notifyUser(Long profile_id, String subject, String message) throws ProfileNotFoundException;
 }
