@@ -156,4 +156,7 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
         return "request is no longer enabled";
     }
 
+    // send invitaiton
+    //
+
 }
