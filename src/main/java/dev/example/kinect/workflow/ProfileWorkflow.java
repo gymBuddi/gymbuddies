@@ -25,7 +25,10 @@ public interface ProfileWorkflow {
     // update planning
     // update user
     // get all planing
-    //
+    // get notification from favoris-offer
+    // oauth
+
+
 
 }
 
