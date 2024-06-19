@@ -24,4 +24,12 @@ public class OfferControllerImp implements OfferController {
     public Void deleteOffer(Long offer_id) throws OfferNotFoundException {
         return profileWorkflow.deleteOffer(offer_id);
     }
+
+    @Override
+    public OfferDTO updateOffer( Long offerId,
+                                 OfferDTO offerDTO,
+                                 Long profileId)
+            throws OfferNotFoundException, PlanningNotFoundException, ProfileNotFoundException {
+        return profileWorkflow.updateOffer(offerId, offerDTO, profileId);
+    }
 }

@@ -42,6 +42,31 @@ public class OfferServiceImp implements OfferService {
         return offerDTO;
     }
 
+
+    @Override
+    public OfferDTO updateOffer(Long offerId, OfferDTO offerDTO, Planning planning, Profile profile)
+            throws OfferNotFoundException {
+        Offer offer = offerRepository.findById(offerId)
+                .orElseThrow(() -> new OfferNotFoundException("Offer not found"));
+
+        // Update offer properties
+        offer.setPublicationDate(offerDTO.getPublicationDate());
+        offer.setPlanningTime(offerDTO.getPlanningTime());
+        offer.setIsActive(offerDTO.getIsActive());
+
+        // Update relationships
+        offer.setProfile(profile);
+        offer.setPlanning(planning);
+        profile.getOffers().add(offer);
+        planning.getOffers().add(offer);
+
+        // Save updated entities
+        profileRepository.save(profile);
+        planningRepository.save(planning);
+        offerRepository.save(offer);
+
+        return offerDTO;
+    }
     @Override
     public Void deletedOffer(Long offer_id) throws OfferNotFoundException {
         Offer offer = offerRepository.findById(offer_id)

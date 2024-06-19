@@ -9,4 +9,7 @@ import dev.example.kinect.model.Profile;
 public interface OfferService {
     OfferDTO saveOffer(OfferDTO offerDTO, Planning planning, Profile profile);
     Void deletedOffer(Long offer_id) throws OfferNotFoundException;
+    OfferDTO updateOffer(Long offerId, OfferDTO offerDTO, Planning planning, Profile profile)
+            throws OfferNotFoundException;
+
 }

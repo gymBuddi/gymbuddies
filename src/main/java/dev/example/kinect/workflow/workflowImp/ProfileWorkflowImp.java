@@ -110,7 +110,15 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
     public Void deleteOffer(Long offer_id) throws OfferNotFoundException {
         return offerService.deletedOffer(offer_id);
     }
-
+    @Override
+    public OfferDTO updateOffer(Long offerId, OfferDTO offerDTO, Long profileId)
+            throws OfferNotFoundException, PlanningNotFoundException, ProfileNotFoundException {
+        Planning planning = planningRepository.findById(offerDTO.getPlanning())
+                .orElseThrow(() -> new PlanningNotFoundException("Planning not found"));
+        Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new ProfileNotFoundException("Profile not found"));
+        return offerService.updateOffer(offerId, offerDTO, planning, profile);
+    }
     @Override
     public RequestDTO createRequest(RequestDTO requestDTO, Long profile_id) throws ProfileNotFoundException, OfferNotFoundException {
         Profile profile = profileRepository.findById(profile_id)
