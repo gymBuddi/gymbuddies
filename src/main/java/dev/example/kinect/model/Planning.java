@@ -30,4 +30,5 @@ public class Planning {
     @OneToMany(mappedBy = "planning")
     private List<Offer> offers;
     private String description;
+    private String name;
 }

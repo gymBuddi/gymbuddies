@@ -1,5 +1,6 @@
 package dev.example.kinect.model;
 
+import dev.example.kinect.model.enums.ActivityLevel;
 import dev.example.kinect.model.enums.FitnessLevel;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -33,11 +34,15 @@ public class Profile {
     private LocalDate birthDate;
     private LocalDate creationDate;
     private Long age;
+    private double height;
+    private double weight;
+    @Enumerated(value = EnumType.STRING)
+    private ActivityLevel activityLevel;
     private boolean verified;
     @OneToOne
     @JoinColumn(name = "trainee_id")
     private Trainee trainee;
-    @Enumerated(value = EnumType.ORDINAL)
+    @Enumerated(value = EnumType.STRING)
     private FitnessLevel fitnessLevel;
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
     private List<Planning> workoutPlannings;

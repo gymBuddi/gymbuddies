@@ -120,7 +120,7 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
         if (profile.getOffers().contains(offer)){
             return requestService.saveRequest(requestDTO, profile, offer);
         }
-        throw new OfferNotFoundException("offer nout found in your profile");
+        throw new OfferNotFoundException("offer not found in your profile");
     }
 
     @Override
@@ -128,7 +128,7 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
     public String acceptRequest(Long request_id) throws RequestNotFoundException, ProfileNotFoundException {
         Request request = requestRepository.findById(request_id)
                 .orElseThrow(() -> new RequestNotFoundException("request not found"));
-        if (!request.isEnabled()) {
+        if (request.isEnabled() && request.getStatus().equals(Status.PENDING)) {
             request.setMatched(true);
             request.setLastUpdatedDate(LocalDateTime.now());
             request.setStatus(Status.ACCEPTED);
@@ -145,7 +145,7 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
             notificationDTO.setProfile(requestUser.getId());
             notificationDTO.setMessage(message);
             notificationService.createNotification(notificationDTO);
-            notificationService.notifyUser(requestUser.getId(), "Your Offer has been accepted", message);
+            //notificationService.notifyUser(requestUser.getId(), "Your Offer has been accepted", message);
             return "congrats! new match is saved";
         }
         return "request is no longer enabled";
@@ -155,7 +155,7 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
     public String deniedRequest(Long request_id) throws RequestNotFoundException {
         Request request = requestRepository.findById(request_id)
                 .orElseThrow(() -> new RequestNotFoundException("request not found"));
-        if (request.isEnabled()) {
+        if (request.isEnabled() && request.getStatus().equals(Status.PENDING)) {
             request.setMatched(true);
             request.setLastUpdatedDate(LocalDateTime.now());
             request.setStatus(Status.DENIED);
@@ -163,6 +163,17 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
             return "Request has been denied";
         }
         return "request is no longer enabled";
+    }
+
+    @Override
+    public String cancelRequest(Long request_id) throws RequestNotFoundException {
+        Request request = requestRepository.findById(request_id)
+                .orElseThrow(() -> new RequestNotFoundException("request not found"));
+        request.setLastUpdatedDate(LocalDateTime.now());
+        request.setStatus(Status.CANCELED);
+        request.setEnabled(false);
+        requestRepository.save(request);
+        return null;
     }
 
 }

@@ -3,6 +3,8 @@ package dev.example.kinect.utils;
 public class AdminPaths {
     public static class Trainee {
         public static final String PATH = "/trainees";
+        public static final String ACTIVE = "/active";
+        public static final String INACTIVE = "/inactive";
     }
 
     public static class Profile {
@@ -21,5 +23,6 @@ public class AdminPaths {
         public static final String PATH = "/request";
         public static final String ACCEPT = "/accept";
         public static final String DENIED = "/denied";
+        public static final String CANCEL = "/cancel";
     }
 }

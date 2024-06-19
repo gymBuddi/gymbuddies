@@ -7,15 +7,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    database-platform: org.hibernate.dialect.H2Dialect
   datasource:
-    username: username
-    password: password
-    url: jdbc:h2:mem:kinectdb
-    driver-class-name: org.h2.Driver
-  h2:
-    console:
-      enabled: true
+    username: root
+    url: jdbc:mysql://localhost/kinectdb?autoReconnect=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
   security:
     user:
       name: username
@@ -25,3 +20,12 @@ spring:
     port: 587
     username: gym.buddies.mobile@gmail.com
     password: gymbuddies123@
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+
+

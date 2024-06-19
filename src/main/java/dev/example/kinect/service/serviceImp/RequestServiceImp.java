@@ -32,6 +32,7 @@ public class RequestServiceImp implements RequestService {
         request.setOffer(offer);
         request.setMatched(false);
         request.setStatus(Status.PENDING);
+        request.setEnabled(true);
         request.setLastUpdatedDate(LocalDateTime.now());
         profile.getRequests().add(request);
         offer.getRequest().add(request);

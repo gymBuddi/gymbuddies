@@ -20,4 +20,5 @@ public interface ProfileWorkflow {
     RequestDTO createRequest(RequestDTO requestDTO, Long profile_id) throws ProfileNotFoundException, OfferNotFoundException;
     String acceptRequest(Long request_id) throws RequestNotFoundException, ProfileNotFoundException;
     String deniedRequest(Long request_id) throws RequestNotFoundException;
+    String cancelRequest(Long request_id) throws RequestNotFoundException;
 }

@@ -72,4 +72,9 @@ public class ProfileControllerImp implements ProfileController {
         return profileWorkflow.deniedRequest(request_id);
     }
 
+    @Override
+    public String cancelRequest(Long request_id) throws RequestNotFoundException {
+        return profileWorkflow.cancelRequest(request_id);
+    }
+
 }
