@@ -33,8 +33,10 @@ import dev.example.kinect.service.ProfileService;
 import dev.example.kinect.service.RequestService;
 import dev.example.kinect.workflow.ProfileWorkflow;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class ProfileWorkflowImp implements ProfileWorkflow {
@@ -98,7 +100,10 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
                 .orElseThrow(() -> new PlanningNotFoundException("planning not found"));
         Profile profile = profileRepository.findById(profile_id)
                 .orElseThrow(() -> new ProfileNotFoundException("user not found"));
-        return offerService.saveOffer(offerDTO, planning, profile);
+        if (profile.getWorkoutPlannings().contains(planning)){
+            return offerService.saveOffer(offerDTO, planning, profile);
+        }
+        throw new PlanningNotFoundException("planning not found in your profile");
     }
 
     @Override
@@ -112,14 +117,18 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
                 .orElseThrow(() -> new ProfileNotFoundException("user not found"));
         Offer offer = offerRepository.findById(requestDTO.getOffer())
                 .orElseThrow(() -> new OfferNotFoundException("offer not found"));
-        return requestService.saveRequest(requestDTO, profile, offer);
+        if (profile.getOffers().contains(offer)){
+            return requestService.saveRequest(requestDTO, profile, offer);
+        }
+        throw new OfferNotFoundException("offer nout found in your profile");
     }
 
     @Override
+    @Transactional
     public String acceptRequest(Long request_id) throws RequestNotFoundException, ProfileNotFoundException {
         Request request = requestRepository.findById(request_id)
                 .orElseThrow(() -> new RequestNotFoundException("request not found"));
-        if (request.isEnabled()) {
+        if (!request.isEnabled()) {
             request.setMatched(true);
             request.setLastUpdatedDate(LocalDateTime.now());
             request.setStatus(Status.ACCEPTED);

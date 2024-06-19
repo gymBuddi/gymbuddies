@@ -34,7 +34,9 @@ public class PlanningServiceImp implements PlanningService {
         planning.setProfile(profile);
         profile.getWorkoutPlannings().add(planning);
         gym.getWorkoutplannings().add(planning);
+        profileRepository.save(profile);
         planningRepository.save(planning);
+        //planningRepository.save(planning);
         return planningDTO;
     }
 

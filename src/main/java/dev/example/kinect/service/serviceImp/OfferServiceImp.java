@@ -13,6 +13,7 @@ import dev.example.kinect.repository.ProfileRepository;
 import dev.example.kinect.service.OfferService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class OfferServiceImp implements OfferService {
@@ -28,6 +29,7 @@ public class OfferServiceImp implements OfferService {
         this.planningRepository = planningRepository;
     }
     @Override
+    @Transactional
     public OfferDTO saveOffer(OfferDTO offerDTO, Planning planning, Profile profile) {
         Offer offer = modelMapper.map(offerDTO, Offer.class);
         offer.setProfile(profile);
@@ -36,7 +38,7 @@ public class OfferServiceImp implements OfferService {
         planning.getOffers().add(offer);
         profileRepository.save(profile);
         planningRepository.save(planning);
-        offerRepository.save(offer);
+        //offerRepository.save(offer);
         return offerDTO;
     }
 
