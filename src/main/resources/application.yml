@@ -32,5 +32,5 @@ security:
     client:
       registration:
         google:
-          client-id: 710150420130-lk06h0eg4c34o848nris8p83dpksapo3.apps.googleusercontent.com
-          client-secret: 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
+          client-id: ${GOOGLE_OAUTH_CLIENT_ID}
+          client-secret: ${GOOGLE_OAUTH_CLIENT_SECRET}
