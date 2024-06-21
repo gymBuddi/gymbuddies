@@ -1,6 +1,6 @@
-application:
-  server:
-    port: 8080
+server:
+  port: 8080
+
 spring:
   application:
     name: Kinect
@@ -27,5 +27,10 @@ spring:
           starttls:
             enable: true
 
-
-
+security:
+  oauth2:
+    client:
+      registration:
+        google:
+          client-id: 710150420130-lk06h0eg4c34o848nris8p83dpksapo3.apps.googleusercontent.com
+          client-secret: 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
