@@ -1,6 +1,7 @@
 package dev.example.kinect.controller.controllerImp;
 
 import dev.example.kinect.controller.TraineeController;
+import dev.example.kinect.dto.TraineeDTO;
 import dev.example.kinect.exception.TraineeNotFoundException;
 import dev.example.kinect.model.Trainee;
 import dev.example.kinect.service.TraineeService;
@@ -16,10 +17,13 @@ public class TraineeControllerImp implements TraineeController {
     }
 
     @Override
-    public Trainee saveTrainee(Trainee trainee) throws TraineeNotFoundException {
+    public Trainee saveTrainee(TraineeDTO trainee) throws TraineeNotFoundException {
         return traineeService.saveTrainee(trainee);
     }
-
+    @Override
+    public Trainee updateTrainee(TraineeDTO trainee) {
+        return traineeService.updateTrainee(trainee);
+    }
     @Override
     public List<Trainee> getActiveTrainees() {
         return traineeService.getActiveTrainees();

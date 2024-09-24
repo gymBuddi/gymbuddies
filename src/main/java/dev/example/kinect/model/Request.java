@@ -4,6 +4,7 @@ import dev.example.kinect.model.enums.Status;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,7 +28,7 @@ public class Request {
     @ManyToOne
     @JoinColumn(name = "sender_id")
     private Profile sender;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "offer_id")
     private Offer offer;
     private boolean isMatched;

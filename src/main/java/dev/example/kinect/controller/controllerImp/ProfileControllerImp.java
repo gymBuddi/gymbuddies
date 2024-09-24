@@ -10,6 +10,7 @@ import dev.example.kinect.exception.PlanningNotFoundException;
 import dev.example.kinect.exception.ProfileNotFoundException;
 import dev.example.kinect.exception.RequestNotFoundException;
 import dev.example.kinect.exception.TraineeNotFoundException;
+import dev.example.kinect.model.Profile;
 import dev.example.kinect.service.ProfileService;
 import dev.example.kinect.workflow.ProfileWorkflow;
 import org.springframework.http.ResponseEntity;
@@ -42,8 +43,13 @@ public class ProfileControllerImp implements ProfileController {
     }
 
     @Override
-    public ProfileDTO saveProfile(ProfileDTO profileDTO) throws TraineeNotFoundException {
+    public Profile saveProfile(ProfileDTO profileDTO) throws TraineeNotFoundException {
         return profileWorkflow.createProfile(profileDTO);
+    }
+
+    @Override
+    public Profile updateProfile(Long profileId) throws ProfileNotFoundException {
+        return profileWorkflow.updateProfile(profileId);
     }
 
     @Override
@@ -52,8 +58,8 @@ public class ProfileControllerImp implements ProfileController {
     }
 
     @Override
-    public Void deletePlanning(Long planning_id, Long profile_id) throws PlanningNotFoundException {
-        return profileWorkflow.deletePlanning(planning_id, profile_id);
+    public ResponseEntity<Void> deletePlanning(Long planningId) throws PlanningNotFoundException {
+        return profileWorkflow.deletePlanning(planningId);
     }
 
     @Override
@@ -68,8 +74,8 @@ public class ProfileControllerImp implements ProfileController {
     }
 
     @Override
-    public String deniedRequest(Long request_id) throws RequestNotFoundException {
-        return profileWorkflow.deniedRequest(request_id);
+    public String deniedRequest(Long requestId) throws RequestNotFoundException {
+        return profileWorkflow.deniedRequest(requestId);
     }
 
     @Override

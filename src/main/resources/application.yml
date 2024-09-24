@@ -11,18 +11,3 @@ spring:
     username: root
     url: jdbc:mysql://localhost/kinectdb?autoReconnect=true
     driver-class-name: com.mysql.cj.jdbc.Driver
-  security:
-    user:
-      name: username
-      password: password
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: gym.buddies.mobile@gmail.com
-    password: gymbuddies123@
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true

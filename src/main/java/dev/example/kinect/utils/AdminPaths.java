@@ -25,4 +25,7 @@ public class AdminPaths {
         public static final String DENIED = "/denied";
         public static final String CANCEL = "/cancel";
     }
+    public static class Role {
+        public static final String PATH = "/roles";
+    }
 }

@@ -7,7 +7,6 @@ import dev.example.kinect.model.Notification;
 import dev.example.kinect.model.Profile;
 import dev.example.kinect.repository.NotificationRepository;
 import dev.example.kinect.repository.ProfileRepository;
-import dev.example.kinect.service.EmailService;
 import dev.example.kinect.service.NotificationService;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +18,9 @@ import java.util.List;
 public class NotificationServiceImp implements NotificationService {
     private final NotificationRepository notificationRepository;
     private final ProfileRepository profileRepository;
-    private final EmailService emailService;
-    public NotificationServiceImp(NotificationRepository notificationRepository, ProfileRepository profileRepository,
-                                  EmailService emailService){
+    public NotificationServiceImp(NotificationRepository notificationRepository, ProfileRepository profileRepository){
         this.notificationRepository = notificationRepository;
         this.profileRepository = profileRepository;
-        this.emailService = emailService;
     }
     @Override
     public void createNotification(NotificationDTO notificationDTO) throws ProfileNotFoundException {
@@ -62,10 +58,5 @@ public class NotificationServiceImp implements NotificationService {
         notification.setRead(true);
         notificationRepository.save(notification);
         return null;
-    }
-
-    @Override
-    public void notifyUser(Long profile_id, String subject, String message) throws ProfileNotFoundException {
-        emailService.sendEmail(profile_id, subject, message);
     }
 }

@@ -7,11 +7,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
-import org.springframework.security.core.GrantedAuthority;
 @Data
 @Entity
-@Table(name = "role")
-public class Role implements GrantedAuthority {
+@Table(name = "roles")
+public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id")

@@ -34,11 +34,11 @@ public class RequestServiceImp implements RequestService {
         request.setStatus(Status.PENDING);
         request.setEnabled(true);
         request.setLastUpdatedDate(LocalDateTime.now());
+
         profile.getRequests().add(request);
         offer.getRequest().add(request);
-        profileRepository.save(profile);
-        offerRepository.save(offer);
-        //requestRepository.save(request);
+
+        requestRepository.save(request);
         return requestDTO;
     }
 }

@@ -16,6 +16,7 @@ import dev.example.kinect.model.Match;
 import dev.example.kinect.model.Offer;
 import dev.example.kinect.model.Planning;
 import dev.example.kinect.model.Profile;
+import dev.example.kinect.model.ProfilePreferences;
 import dev.example.kinect.model.Request;
 import dev.example.kinect.model.Trainee;
 import dev.example.kinect.model.enums.Status;
@@ -23,6 +24,7 @@ import dev.example.kinect.repository.GymRepository;
 import dev.example.kinect.repository.MatchingRepository;
 import dev.example.kinect.repository.OfferRepository;
 import dev.example.kinect.repository.PlanningRepository;
+import dev.example.kinect.repository.ProfilePreferencesRepository;
 import dev.example.kinect.repository.ProfileRepository;
 import dev.example.kinect.repository.RequestRepository;
 import dev.example.kinect.repository.TraineeRepository;
@@ -32,11 +34,15 @@ import dev.example.kinect.service.PlanningService;
 import dev.example.kinect.service.ProfileService;
 import dev.example.kinect.service.RequestService;
 import dev.example.kinect.workflow.ProfileWorkflow;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Service
 public class ProfileWorkflowImp implements ProfileWorkflow {
@@ -73,11 +79,10 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
     }
 
     @Override
-    public ProfileDTO createProfile(ProfileDTO profileDTO) throws TraineeNotFoundException {
+    public Profile createProfile(ProfileDTO profileDTO) throws TraineeNotFoundException {
         Trainee trainee = traineeRepository.findById(profileDTO.getTrainee())
                 .orElseThrow(() -> new TraineeNotFoundException("trainee not found"));
-        profileService.saveProfile(profileDTO, trainee);
-        return profileDTO;
+        return profileService.saveProfile(profileDTO, trainee);
     }
 
     @Override
@@ -90,57 +95,95 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
     }
 
     @Override
-    public Void deletePlanning(Long planning_id, Long profile_id) throws PlanningNotFoundException {
-        return planningService.deletePlanning(planning_id, profile_id);
-    }
-
-    @Override
-    public OfferDTO createOffer(OfferDTO offerDTO, Long profile_id) throws PlanningNotFoundException, ProfileNotFoundException {
-        Planning planning = planningRepository.findById(offerDTO.getPlanning())
-                .orElseThrow(() -> new PlanningNotFoundException("planning not found"));
-        Profile profile = profileRepository.findById(profile_id)
-                .orElseThrow(() -> new ProfileNotFoundException("user not found"));
-        if (profile.getWorkoutPlannings().contains(planning)){
-            return offerService.saveOffer(offerDTO, planning, profile);
+    public ResponseEntity<Void> deletePlanning(Long planningId) throws PlanningNotFoundException {
+        try {
+            planningService.deletePlanning(planningId);
+            return ResponseEntity.noContent().build();
+        } catch (PlanningNotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
-        throw new PlanningNotFoundException("planning not found in your profile");
     }
 
     @Override
-    public Void deleteOffer(Long offer_id) throws OfferNotFoundException {
-        return offerService.deletedOffer(offer_id);
+    public ResponseEntity<OfferDTO> createOffer(OfferDTO offerDTO, Long profileId) throws PlanningNotFoundException, ProfileNotFoundException {
+        try {
+            Planning planning = planningRepository.findById(offerDTO.getPlanning().getId())
+                    .orElseThrow(() -> new PlanningNotFoundException("planning not found"));
+            Profile profile = profileRepository.findById(profileId)
+                    .orElseThrow(() -> new ProfileNotFoundException("user not found"));
+            if (profile.getWorkoutPlannings().contains(planning)) {
+                OfferDTO offerDTO1 = offerService.saveOffer(offerDTO, planning, profile);
+                return ResponseEntity.ok(offerDTO1);
+            }
+            System.out.println("Planning not found in User plannings");
+            return null;
+        } catch (PlanningNotFoundException | ProfileNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteOffer(Long offerId) throws OfferNotFoundException {
+        try {
+            offerService.deleteOffer(offerId);
+            return ResponseEntity.noContent().build();
+        } catch (OfferNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
     @Override
     public OfferDTO updateOffer(Long offerId, OfferDTO offerDTO, Long profileId)
             throws OfferNotFoundException, PlanningNotFoundException, ProfileNotFoundException {
-        Planning planning = planningRepository.findById(offerDTO.getPlanning())
+        Planning planning = planningRepository.findById(offerDTO.getPlanning().getId())
                 .orElseThrow(() -> new PlanningNotFoundException("Planning not found"));
         Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new ProfileNotFoundException("Profile not found"));
         return offerService.updateOffer(offerId, offerDTO, planning, profile);
     }
+
     @Override
-    public RequestDTO createRequest(RequestDTO requestDTO, Long profile_id) throws ProfileNotFoundException, OfferNotFoundException {
-        Profile profile = profileRepository.findById(profile_id)
+    public Profile updateProfile(Long profileId) throws ProfileNotFoundException {
+        /*Profile profile = profileRepository.findById(profileId).orElseThrow(() ->
+                new ProfileNotFoundException("profile not found"));
+        // create the preferences
+        ProfilePreferences preferences = new ProfilePreferences();
+        preferences.setProfile(profile);
+        preferences.setExperienceLevel("BEGINNER");
+        preferences.setFitnessGoals(Set.of("Gain weight", "Gain muscles"));
+        preferences.setAvailability(Set.of("After 6pm"));
+        preferences.setWorkoutPreferences(Set.of("Upper Body workouts", "NO cardio"));
+        profile.setPreferences(preferences);
+        profilePreferencesRepository.save(preferences);
+        // set the preferences to the profile and save it in the database
+        profileRepository.save(profile);*/
+        return null;
+    }
+
+    @Override
+    public RequestDTO createRequest(RequestDTO requestDTO, Long profileId) throws ProfileNotFoundException, OfferNotFoundException {
+        Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new ProfileNotFoundException("user not found"));
         Offer offer = offerRepository.findById(requestDTO.getOffer())
                 .orElseThrow(() -> new OfferNotFoundException("offer not found"));
-        if (profile.getOffers().contains(offer)){
-            return requestService.saveRequest(requestDTO, profile, offer);
+        if (Objects.equals(offer.getProfile().getId(), profileId)) {
+            System.out.println("You can't submit to you your offer");
+            return null;
         }
-        throw new OfferNotFoundException("offer not found in your profile");
+        return requestService.saveRequest(requestDTO, profile, offer);
+
     }
 
     @Override
     @Transactional
-    public String acceptRequest(Long request_id) throws RequestNotFoundException, ProfileNotFoundException {
-        Request request = requestRepository.findById(request_id)
+    public String acceptRequest(Long requestId) throws RequestNotFoundException, ProfileNotFoundException {
+        Request request = requestRepository.findById(requestId)
                 .orElseThrow(() -> new RequestNotFoundException("request not found"));
         if (request.isEnabled() && request.getStatus().equals(Status.PENDING)) {
             request.setMatched(true);
             request.setLastUpdatedDate(LocalDateTime.now());
             request.setStatus(Status.ACCEPTED);
             requestRepository.save(request);
+            // create a new match
             Match match = new Match();
             match.setRequest(request);
             match.setOffer(request.getOffer());
@@ -160,8 +203,8 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
     }
 
     @Override
-    public String deniedRequest(Long request_id) throws RequestNotFoundException {
-        Request request = requestRepository.findById(request_id)
+    public String deniedRequest(Long requestId) throws RequestNotFoundException {
+        Request request = requestRepository.findById(requestId)
                 .orElseThrow(() -> new RequestNotFoundException("request not found"));
         if (request.isEnabled() && request.getStatus().equals(Status.PENDING)) {
             request.setMatched(true);

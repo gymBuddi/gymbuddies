@@ -10,6 +10,7 @@ import dev.example.kinect.repository.PlanningRepository;
 import dev.example.kinect.repository.ProfileRepository;
 import dev.example.kinect.service.PlanningService;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -34,22 +35,14 @@ public class PlanningServiceImp implements PlanningService {
         planning.setProfile(profile);
         profile.getWorkoutPlannings().add(planning);
         gym.getWorkoutplannings().add(planning);
-        profileRepository.save(profile);
         planningRepository.save(planning);
-        //planningRepository.save(planning);
         return planningDTO;
     }
 
     @Override
-    public Void deletePlanning(Long planning_id, Long profile_id) throws PlanningNotFoundException {
-        Planning planning = planningRepository.findById(planning_id)
+    public void deletePlanning(Long planningId) throws PlanningNotFoundException {
+        Planning planning = planningRepository.findById(planningId)
                 .orElseThrow(() -> new PlanningNotFoundException("planning not found"));
-        Optional<Profile> profile = profileRepository.findById(profile_id);
-        if (profile.isPresent()) {
-            profile.get().getWorkoutPlannings().remove(planning); // remove the planning from the user plannings.
-            planning.setProfile(null); // breaking the relation between the user and the planning.
-            planningRepository.delete(planning);
-        }
-        return null;
+        planningRepository.delete(planning);
     }
 }

@@ -10,18 +10,20 @@ import dev.example.kinect.exception.PlanningNotFoundException;
 import dev.example.kinect.exception.ProfileNotFoundException;
 import dev.example.kinect.exception.RequestNotFoundException;
 import dev.example.kinect.exception.TraineeNotFoundException;
+import dev.example.kinect.model.Profile;
+import org.springframework.http.ResponseEntity;
 
 public interface ProfileWorkflow {
-    ProfileDTO createProfile(ProfileDTO profileDTO) throws TraineeNotFoundException;
+    Profile createProfile(ProfileDTO profileDTO) throws TraineeNotFoundException;
     PlanningDTO createPlanning(PlanningDTO planningDTO, Long profile_id) throws ProfileNotFoundException, GymNotFoundException;
-    Void deletePlanning(Long planning_id, Long profile_id) throws PlanningNotFoundException;
-    OfferDTO createOffer(OfferDTO offerDTO, Long profile_id) throws PlanningNotFoundException, ProfileNotFoundException;
-    Void deleteOffer(Long offer_id) throws OfferNotFoundException;
-    RequestDTO createRequest(RequestDTO requestDTO, Long profile_id) throws ProfileNotFoundException, OfferNotFoundException;
+    ResponseEntity<Void> deletePlanning(Long planningId) throws PlanningNotFoundException;
+    ResponseEntity<OfferDTO> createOffer(OfferDTO offerDTO, Long profileId) throws PlanningNotFoundException, ProfileNotFoundException;
+    ResponseEntity<Void> deleteOffer(Long offerId) throws OfferNotFoundException;
+    RequestDTO createRequest(RequestDTO requestDTO, Long profileId) throws ProfileNotFoundException, OfferNotFoundException;
     String acceptRequest(Long request_id) throws RequestNotFoundException, ProfileNotFoundException;
-    String deniedRequest(Long request_id) throws RequestNotFoundException;
+    String deniedRequest(Long requestId) throws RequestNotFoundException;
     public String cancelRequest(Long request_id) throws RequestNotFoundException;
     OfferDTO updateOffer(Long offerId, OfferDTO offerDTO, Long profileId)
             throws OfferNotFoundException, PlanningNotFoundException, ProfileNotFoundException;
-
+    Profile updateProfile(Long profileId) throws ProfileNotFoundException;
 }

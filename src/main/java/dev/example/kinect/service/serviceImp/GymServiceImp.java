@@ -17,9 +17,8 @@ public class GymServiceImp implements GymService {
     }
 
     @Override
-    public GymDTO saveGym(GymDTO gymDTO) {
+    public Gym saveGym(GymDTO gymDTO) {
         Gym gym = modelMapper.map(gymDTO, Gym.class);
-        Gym savedGym = gymRepository.save(gym);
-        return modelMapper.map(savedGym, GymDTO.class);
+        return gymRepository.save(gym);
     }
 }
