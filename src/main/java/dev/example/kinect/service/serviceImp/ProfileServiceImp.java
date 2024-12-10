@@ -58,11 +58,11 @@ public class ProfileServiceImp implements ProfileService {
         // set the profile to trainee object
         trainee.setProfile(profile);
         // add profile preferences
-        ProfilePreferences preferences = getProfilePreferences(profileDTO, profile);
+        //ProfilePreferences preferences = getProfilePreferences(profileDTO, profile);
         // save the profile
         Profile savedProfile = profileRepository.save(profile);
         traineeRepository.save(trainee);
-        profilePreferencesRepository.save(preferences);
+        //profilePreferencesRepository.save(preferences);
         return savedProfile;
     }
 
@@ -82,6 +82,6 @@ public class ProfileServiceImp implements ProfileService {
         Profile profile = profileRepository.findById(profile_id)
                 .orElseThrow(() -> new ProfileNotFoundException("profile not found"));
         Trainee trainee = profile.getTrainee();
-        return trainee.getEmail();
+        return trainee.getUsername();
     }
 }

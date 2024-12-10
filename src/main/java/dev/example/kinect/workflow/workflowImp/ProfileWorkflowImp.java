@@ -11,6 +11,7 @@ import dev.example.kinect.exception.PlanningNotFoundException;
 import dev.example.kinect.exception.ProfileNotFoundException;
 import dev.example.kinect.exception.RequestNotFoundException;
 import dev.example.kinect.exception.TraineeNotFoundException;
+import dev.example.kinect.helper.JwtUtils;
 import dev.example.kinect.model.Gym;
 import dev.example.kinect.model.Match;
 import dev.example.kinect.model.Offer;
@@ -58,12 +59,13 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
     private final RequestRepository requestRepository;
     private final MatchingRepository matchRepository;
     private final NotificationService notificationService;
+    private final JwtUtils jwtUtils;
     public ProfileWorkflowImp(ProfileService profileService, TraineeRepository traineeRepository,
                               GymRepository gymRepository, PlanningService planningService,
                               ProfileRepository profileRepository, PlanningRepository planningRepository,
                               OfferService offerService, OfferRepository offerRepository, RequestService requestService,
                               RequestRepository requestRepository, MatchingRepository matchRepository,
-                              NotificationService notificationService){
+                              NotificationService notificationService, JwtUtils jwtUtils){
         this.profileService = profileService;
         this.traineeRepository = traineeRepository;
         this.gymRepository = gymRepository;
@@ -76,12 +78,19 @@ public class ProfileWorkflowImp implements ProfileWorkflow {
         this.requestRepository = requestRepository;
         this.matchRepository = matchRepository;
         this.notificationService = notificationService;
+        this.jwtUtils = jwtUtils;
     }
 
     @Override
-    public Profile createProfile(ProfileDTO profileDTO) throws TraineeNotFoundException {
-        Trainee trainee = traineeRepository.findById(profileDTO.getTrainee())
-                .orElseThrow(() -> new TraineeNotFoundException("trainee not found"));
+    public Profile createProfile(ProfileDTO profileDTO, String authHeader) throws TraineeNotFoundException {
+        // Extract token from Authorization header
+        String token = authHeader.substring(7); // Remove "Bearer "
+
+        // Extract username from token
+        String username = jwtUtils.extractUsername(token);
+        // Find Trainee by username
+        Trainee trainee = traineeRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Trainee not found"));
         return profileService.saveProfile(profileDTO, trainee);
     }
 

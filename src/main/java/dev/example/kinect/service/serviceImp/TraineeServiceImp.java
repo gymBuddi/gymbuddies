@@ -4,6 +4,7 @@ import dev.example.kinect.dto.TraineeDTO;
 import dev.example.kinect.exception.TraineeNotFoundException;
 import dev.example.kinect.model.Role;
 import dev.example.kinect.model.Trainee;
+import dev.example.kinect.model.enums.RoleEnum;
 import dev.example.kinect.repository.RoleRepository;
 import dev.example.kinect.repository.TraineeRepository;
 import dev.example.kinect.service.TraineeService;
@@ -28,25 +29,23 @@ public class TraineeServiceImp implements TraineeService {
 
     @Override
     public Trainee saveTrainee(TraineeDTO trainee) throws TraineeNotFoundException {
-        Optional<Trainee> traineeOptional = traineeRepository.findByEmail(trainee.getEmail());
+        Optional<Trainee> traineeOptional = traineeRepository.findByUsername(trainee.getEmail());
         if (traineeOptional.isPresent()) {
             throw new TraineeNotFoundException("user already exist");
         }
         Trainee savedTrainee = new Trainee();
-        savedTrainee.setEmail(trainee.getEmail());
-        savedTrainee.setActive(true);
+        savedTrainee.setUsername(trainee.getEmail());
         savedTrainee.setPassword(DEFAULT_PASSWORD);
-        Optional<Role> role = roleRepository.findByAuthority(DEFAULT_AUTHORITY);
-        role.ifPresent(value -> savedTrainee.setAuthorities(Set.of(value)));
+        Optional<Role> role = roleRepository.findByRole(RoleEnum.ADMIN);
+        role.ifPresent(value -> savedTrainee.setRoles(Set.of(value)));
         return traineeRepository.save(savedTrainee);
     }
 
     @Override
     public Trainee updateTrainee(TraineeDTO traineeDTO) {
-        Optional<Trainee> traineeOptional = traineeRepository.findByEmail(traineeDTO.getEmail());
+        Optional<Trainee> traineeOptional = traineeRepository.findByUsername(traineeDTO.getEmail());
         if(traineeOptional.isPresent()) {
             Optional<Role> role = roleRepository.findByAuthority(DEFAULT_AUTHORITY);
-            role.ifPresent(value -> traineeOptional.get().setAuthorities(Set.of(value)));
             return traineeRepository.save(traineeOptional.get());
         }
         return null;
@@ -54,11 +53,11 @@ public class TraineeServiceImp implements TraineeService {
 
     @Override
     public List<Trainee> getActiveTrainees() {
-        return traineeRepository.findAll().stream().filter(Trainee::isActive).collect(Collectors.toList());
+        return traineeRepository.findAll().stream().filter(Trainee::isEnabled).collect(Collectors.toList());
     }
 
     @Override
     public List<Trainee> getInactiveTrainees() {
-        return traineeRepository.findAll().stream().filter(trainee -> !trainee.isActive()).collect(Collectors.toList());
+        return traineeRepository.findAll().stream().filter(trainee -> !trainee.isEnabled()).collect(Collectors.toList());
     }
 }

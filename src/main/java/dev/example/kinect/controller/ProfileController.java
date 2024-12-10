@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public interface ProfileController {
     @GetMapping("/{username}")
     ProfileDTO loadProfile(@PathVariable(value = "username") String username) throws ProfileNotFoundException;
     @PostMapping()
-    Profile saveProfile(@RequestBody ProfileDTO profileDTO) throws TraineeNotFoundException;
+    Profile saveProfile(@RequestBody ProfileDTO profileDTO, @RequestHeader("Authorization") String authHeader) throws TraineeNotFoundException;
     @PutMapping(PathParam.PROFILE_ID)
     Profile updateProfile(@PathVariable(value = RestParam.PROFILE_ID) Long profileId) throws ProfileNotFoundException;
     @PostMapping(AdminPaths.Profile.PLANNING + PathParam.PROFILE_ID)

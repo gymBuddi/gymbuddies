@@ -14,7 +14,7 @@ import dev.example.kinect.model.Profile;
 import org.springframework.http.ResponseEntity;
 
 public interface ProfileWorkflow {
-    Profile createProfile(ProfileDTO profileDTO) throws TraineeNotFoundException;
+    Profile createProfile(ProfileDTO profileDTO, String authHeader) throws TraineeNotFoundException;
     PlanningDTO createPlanning(PlanningDTO planningDTO, Long profile_id) throws ProfileNotFoundException, GymNotFoundException;
     ResponseEntity<Void> deletePlanning(Long planningId) throws PlanningNotFoundException;
     ResponseEntity<OfferDTO> createOffer(OfferDTO offerDTO, Long profileId) throws PlanningNotFoundException, ProfileNotFoundException;

@@ -25,7 +25,6 @@ public class ProfileDTO {
     private String avatarPicture;
     private LocalDate birthDate;
     private boolean verified;
-    private Long trainee;
     private Long age;
     private double height;
     private double weight;

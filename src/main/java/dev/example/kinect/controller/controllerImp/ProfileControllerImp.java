@@ -43,8 +43,8 @@ public class ProfileControllerImp implements ProfileController {
     }
 
     @Override
-    public Profile saveProfile(ProfileDTO profileDTO) throws TraineeNotFoundException {
-        return profileWorkflow.createProfile(profileDTO);
+    public Profile saveProfile(ProfileDTO profileDTO, String authHeader) throws TraineeNotFoundException {
+        return profileWorkflow.createProfile(profileDTO, authHeader);
     }
 
     @Override

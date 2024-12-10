@@ -28,4 +28,7 @@ public class AdminPaths {
     public static class Role {
         public static final String PATH = "/roles";
     }
+    public static class Authority {
+        public static final String PATH = "/authorities";
+    }
 }
